@@ -1,19 +1,20 @@
 # pymol-publication-styles
 
-An agent skill and Python/PyMOL rendering toolkit supporting **six classic publication-quality biomolecular visualization styles** — usable seamlessly across **Antigravity**, **Claude Code**, and **OpenAI Codex CLI**.
+An agent skill and Python/PyMOL rendering toolkit supporting **10 classic structural biology & AIDD publication styles** plus **automated multi-panel figure workflows** — usable seamlessly across **Antigravity**, **Claude Code**, and **OpenAI Codex CLI**.
 
-Every command automatically produces three files at `--out-prefix`:
-- `<prefix>.png` — Ray-traced high-resolution image
+Every single-view command emits three files at `--out-prefix`:
+- `<prefix>.png` — Ray-traced high-resolution image (supports `--transparent` & `--auto-crop`)
 - `<prefix>.pse` — Interactive PyMOL session
 - `<prefix>.pml` — Standalone human-readable PyMOL script
 
+And `--with-inset` automatically generates `<prefix>_global.png`, `<prefix>_inset.png`, and a framed side-by-side composite `<prefix>_composite.png`.
+
 ---
 
-## Style Gallery
+## Style Gallery (10 Built-In Styles)
 
 ### 1. `baker_rfd` *(Default)* — Baker Lab / IPD (RFdiffusion 1–3)
-
-Derived directly from **RFdiffusion 1** (*Nature* 2023), **RFdiffusion All-Atom** (*Science* 2024), **RFdiffusion 2** (*Nature Methods* 2025/2026), and **RFdiffusion 3** (*bioRxiv* 2025) — explicitly avoiding RFD4's aesthetic. Features matte cel-shaded outlines (`ray_trace_mode=1`), soft pastel topology gradients (`#FCD4AC` → `#FCACB4` → `#9494C4` → `#5064AC`), signature motif/catalytic teal (`#4CB8AC`), warm sand target (`#FCDCA8`) + orange hotspot (`#F08828`), and charcoal all-atom ligands (`#48484C`).
+Matte cel-shaded outlines (`ray_trace_mode=1`), soft pastel topology gradients (`#FCD4AC` → `#FCACB4` → `#9494C4` → `#5064AC`), signature motif/catalytic teal (`#4CB8AC`), warm sand target (`#FCDCA8`) + orange hotspot (`#F08828`), and charcoal all-atom ligands (`#48484C`) — explicitly avoiding RFD4's aesthetic.
 
 | Monomer (`6WVS`) | Target–Binder Complex (`7UHB`) | Enzyme Active Site (`5AN7`) |
 | :---: | :---: | :---: |
@@ -21,62 +22,48 @@ Derived directly from **RFdiffusion 1** (*Nature* 2023), **RFdiffusion All-Atom*
 
 ---
 
-### 2. `goodsell` — David Goodsell / RCSB *Molecule of the Month* Watercolor Style
+### 2–6. Classic Structural Biology Styles (`goodsell`, `cylindrical`, `chimerax_soft`, `spotlight`, `alphafold_plddt`)
 
-Full-atom space-filling spheres (`spheres`) with quantized cel-shaded outlines (`ray_trace_mode=3`), flat high-ambient lighting (`ambient=0.68`, `spec_reflect=0.0`), muted watercolor palettes, and gentle O/N heteroatom tints.
+Generated directly via `showcase --scene monomer`:
 
-| Target–Binder Complex (`7UHB`) |
+| 6-Style Same-Camera Showcase Grid (`6WVS`) |
 | :---: |
-| <img src="assets/goodsell_binder.png" width="480" alt="Goodsell Watercolor Style"> |
+| ![6-Style Showcase Grid](assets/showcase_grid.png) |
+
+| Goodsell Watercolor (`7UHB`) | ChimeraX Soft Ceramic AO (`7UHB`) | Monochrome Spotlight (`5AN7`) |
+| :---: | :---: | :---: |
+| ![Goodsell Binder](assets/goodsell_binder.png) | ![ChimeraX Soft Binder](assets/chimerax_soft_binder.png) | ![Spotlight Active Site](assets/spotlight_active_site.png) |
 
 ---
 
-### 3. `cylindrical` — *Nature* / *Cell* Minimalist Cylindrical-Helix Architecture
+### 7–10. AIDD-Specialized Styles & Automated Figure Layouts
 
-Solid cylindrical α-helices (`cartoon_cylindrical_helices=1`), flat β-sheets, slim loops (`cartoon_loop_radius=0.16`), and high-clarity architectural gradients (`#2B5C8F` → `#3D9970` → `#E9C46A` → `#E07A5F`). Ideal for TIM barrels, GPCRs, ion channels, and membrane protein topology figures.
-
-| TIM Barrel (`6WVS`) |
+#### 7. `antibody_cdr` — Antibody CDR Loops + 4.5 Å Epitope Footprint (`antibody --with-inset`)
+| Global Complex + Framed CDR–Antigen Interface Inset (`5TPN`) |
 | :---: |
-| <img src="assets/cylindrical_monomer.png" width="480" alt="Cylindrical Architecture Style"> |
+| ![Antibody CDR Composite](assets/antibody_cdr_composite.png) |
 
----
-
-### 4. `chimerax_soft` — ChimeraX Soft-Shadow / Matte Ceramic AO Cryo-EM Style
-
-Outline-free (`ray_trace_mode=0`) pure ambient-occlusion and soft-shadow shading (`ambient_occlusion_mode=1`, `ambient_occlusion_scale=25.0`, `ray_shadow=1`) with matte ceramic clay surfaces (`#D8D4CE`) and muted cobalt/salmon accents.
-
-| Target–Binder Surface (`7UHB`) |
+#### 8. `hydrophobic_surface` — Physicochemical Complementarity (`binder --style hydrophobic_surface --transparent --auto-crop`)
+| Eisenberg Hydrophobicity Surface + Hydrophobic Anchor Sticks (`7UHB`) |
 | :---: |
-| <img src="assets/chimerax_soft_binder.png" width="480" alt="ChimeraX Soft AO Style"> |
+| ![Hydrophobic Surface Binder](assets/hydrophobic_surface_binder.png) |
 
----
-
-### 5. `spotlight` — Monochrome Ghost Scaffold + Jewel-Tone Focal Spotlight
-
-Semi-transparent cool porcelain scaffold (`#E2E4E8`, `cartoon_transparency=0.62`) paired with opaque ball-and-stick focal catalytic residues and ligands in vivid crimson (`#E63946`) and cyan (`#00B4D8`).
-
-| Active-Site Pocket (`5AN7`) |
+#### 9. `pocket_cavity` — Local Pocket Cutaway + Pose Overlay & In-Pocket Ligand RMSD (`ligand_pocket --with-inset`)
+| Global Scaffold + Cutaway Cavity & Overlaid Ligand Poses (`5AN7`) |
 | :---: |
-| <img src="assets/spotlight_active_site.png" width="480" alt="Spotlight Style"> |
+| ![Pocket Cavity Composite](assets/pocket_cavity_composite.png) |
 
----
-
-### 6. `alphafold_plddt` — Canonical AlphaFold / ColabFold pLDDT Confidence Style
-
-Auto-normalizes `0..1` and `0..100` B-factors and applies canonical confidence colors (`#0053D6` $\ge 90$, `#65CBF3` $70\text{–}90$, `#FFDB13` $50\text{–}70$, `#FF7D45` $< 50$) with crisp matte outlines. *(Example shown on crystal structure `6WVS` mapping crystallographic B-factors.)*
-
-| Confidence Mapping (`6WVS`) |
-| :---: |
-| <img src="assets/alphafold_plddt_monomer.png" width="480" alt="AlphaFold pLDDT Style"> |
+#### 10. `diffusion_ensemble` & `trajectory_strip` — Multi-State Ghosting & Time-Step Progression
+| Multi-State Ensemble Ghosting (`diffusion_ensemble`) | Horizontal Time-Step Strip (`trajectory_strip`) |
+| :---: | :---: |
+| ![Diffusion Ensemble](assets/diffusion_ensemble.png) | ![Trajectory Strip](assets/trajectory_strip.png) |
 
 ---
 
 ## Cross-Agent Installation (Antigravity / Claude Code / Codex)
 
-Clone once and symlink into whichever AI coding agent(s) you use:
-
 ```bash
-# Clone to a central location (e.g. ~/.gemini/config/skills/ or ~/.agents/skills/)
+# Clone once
 git clone https://github.com/leslieqin-omg/pymol-publication-styles.git ~/.gemini/config/skills/pymol-publication-styles
 
 # Enable in Claude Code
@@ -89,52 +76,37 @@ ln -sfn ~/.gemini/config/skills/pymol-publication-styles ~/.codex/skills/pymol-p
 ln -sfn ~/.gemini/config/skills/pymol-publication-styles ~/.agents/skills/pymol-publication-styles
 ```
 
-Works with either local open-source PyMOL (`python3 scripts/render_publication.py ...`) or `uv run scripts/render_publication.py ...` (auto-installs `pymol-open-source-whl` via PEP 723).
+Works with either local open-source PyMOL (`python3 scripts/render_publication.py ...`) or `uv run scripts/render_publication.py ...`.
 
 ---
 
 ## CLI Quick Examples
 
 ```bash
-# 1. Baker Lab / RFdiffusion 1-3 binder complex
+# 1. Antibody CDR loops + 4.5 A epitope footprint + inset composite
+python3 scripts/render_publication.py antibody \
+  --complex ab_ag.cif --antigen-chain A --heavy-chain H --light-chain L \
+  --with-inset --auto-crop --out-prefix output/antibody
+
+# 2. Hydrophobic surface complementarity (transparent + auto-cropped)
 python3 scripts/render_publication.py binder \
-  --style baker_rfd \
-  --complex complex.cif \
-  --target-chain C --binder-chain K \
-  --hotspots "resi 417+453+455+486+489+493" \
-  --out-prefix output/binder_baker
+  --style hydrophobic_surface --complex complex.cif \
+  --target-chain C --binder-chain K --transparent --auto-crop \
+  --out-prefix output/hydrophobic_binder
 
-# 2. Goodsell watercolor spheres
-python3 scripts/render_publication.py binder \
-  --style goodsell \
-  --complex complex.cif \
-  --target-chain C --binder-chain K \
-  --out-prefix output/binder_goodsell
+# 3. Local pocket cutaway + ligand pose overlay + in-pocket heavy-atom RMSD
+python3 scripts/render_publication.py ligand_pocket \
+  --structure crystal.cif --reference pred.cif \
+  --ligand-sele "resn LLK" --with-inset --auto-crop \
+  --out-prefix output/pocket_rmsd
 
-# 3. Minimalist cylindrical-helix barrel
-python3 scripts/render_publication.py monomer \
-  --style cylindrical \
-  --structure barrel.cif \
-  --out-prefix output/barrel_cylindrical
+# 4. Diffusion / MD trajectory progression strip
+python3 scripts/render_publication.py trajectory_strip \
+  --structure traj.pdb --n-frames 4 --style baker_rfd \
+  --out-prefix output/traj_strip
 
-# 4. ChimeraX soft ceramic AO surface
-python3 scripts/render_publication.py binder \
-  --style chimerax_soft \
-  --complex complex.cif \
-  --target-chain C --binder-chain K \
-  --out-prefix output/binder_chimerax
-
-# 5. Monochrome ghost + jewel spotlight active site
-python3 scripts/render_publication.py active_site \
-  --style spotlight \
-  --structure enzyme.cif \
-  --catalytic-sele "resi 1057+1184+1185+1186" \
-  --ligand-sele "resn LLK" \
-  --out-prefix output/active_site_spotlight
-
-# 6. AlphaFold pLDDT confidence
-python3 scripts/render_publication.py monomer \
-  --style alphafold_plddt \
-  --structure model.cif \
-  --out-prefix output/model_plddt
+# 5. Same-camera style comparison sheet
+python3 scripts/render_publication.py showcase \
+  --structure design.cif --scene monomer --all-styles \
+  --out-prefix output/style_grid
 ```

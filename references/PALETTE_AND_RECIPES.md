@@ -1,16 +1,12 @@
 # PyMOL Publication Styles — Palettes & Rendering Settings Reference
 
-Complete RGB/Hex palettes and PyMOL rendering parameters for all six built-in publication presets.
+Complete RGB/Hex palettes and PyMOL rendering parameters for all **10 built-in publication & AIDD presets**.
 
 ---
 
 ## 1. `baker_rfd` — Baker Lab / IPD (RFdiffusion 1–3)
 
-Derived directly from:
-- Watson et al., *Nature* 620, 1089–1100 (2023) (`10.1038/s41586-023-06415-8`)
-- Krishna et al., *Science* 384, eadl2528 (2024) (`10.1126/science.adl2528`)
-- Ahern et al., *Nature Methods* (2025/2026) (`10.1038/s41592-025-02975-x`)
-- Butcher et al., *bioRxiv* (2025) (`10.1101/2025.09.18.676967`)
+Derived from Watson et al. (*Nature* 2023), Krishna et al. (*Science* 2024), Ahern et al. (*Nature Methods* 2025/2026), and Butcher et al. (*bioRxiv* 2025).
 
 | PyMOL Color Name | Hex | RGB `[R, G, B]` | Role |
 |---|---|---|---|
@@ -38,68 +34,55 @@ Derived directly from:
 
 ## 2. `goodsell` — David Goodsell Watercolor Style
 
-Inspired by RCSB PDB *Molecule of the Month* illustrations. Full-atom space-filling `spheres` with quantized cel-shaded outlines (`ray_trace_mode 3`), high ambient flat lighting (`ambient 0.68`, `spec_reflect 0.0`, `ray_shadow 0`), and gentle watercolor tints.
-
-| PyMOL Color Name | Hex | RGB `[R, G, B]` | Role |
-|---|---|---|---|
-| `goodsell_coral` | `#F29E8E` | `[0.949, 0.620, 0.557]` | Chain 1 / Motif |
-| `goodsell_sage` | `#98C9A3` | `[0.596, 0.788, 0.639]` | Chain 2 |
-| `goodsell_sky` | `#8FB8DE` | `[0.561, 0.722, 0.871]` | Chain 3 / Binder |
-| `goodsell_ochre` | `#F2CC8F` | `[0.949, 0.800, 0.561]` | Chain 4 / Hotspot |
-| `goodsell_plum` | `#C39BD3` | `[0.765, 0.608, 0.827]` | Chain 5 / Ligand |
-| `goodsell_sand` | `#E6D5B8` | `[0.902, 0.835, 0.722]` | Chain 6 / Target |
-| `goodsell_oxygen` | `#D96B6B` | `[0.851, 0.420, 0.420]` | Oxygen atom tint |
-| `goodsell_nitrogen` | `#5B82B8` | `[0.357, 0.510, 0.722]` | Nitrogen atom tint |
+Full-atom `spheres` with `ray_trace_mode 3`, flat high ambient (`ambient 0.68`, `spec_reflect 0.0`, `ray_shadow 0`), and gentle O/N tints:
+`goodsell_coral` (`#F29E8E`), `goodsell_sage` (`#98C9A3`), `goodsell_sky` (`#8FB8DE`), `goodsell_ochre` (`#F2CC8F`), `goodsell_plum` (`#C39BD3`), `goodsell_sand` (`#E6D5B8`), `goodsell_oxygen` (`#D96B6B`), `goodsell_nitrogen` (`#5B82B8`).
 
 ---
 
 ## 3. `cylindrical` — Minimalist Cylindrical-Helix Architecture
 
-`cartoon_cylindrical_helices 1`, `cartoon_helix_radius 1.95`, `cartoon_flat_sheets 1`, `cartoon_loop_radius 0.16`, `ray_trace_mode 1`, `ray_trace_gain 0.06`.
-
-| PyMOL Color Name | Hex | RGB `[R, G, B]` | Role |
-|---|---|---|---|
-| `arch_navy` | `#2B5C8F` | `[0.169, 0.361, 0.561]` | Primary domain / binder |
-| `arch_coral` | `#E07A5F` | `[0.878, 0.478, 0.373]` | Secondary domain / motif |
-| `arch_teal` | `#3D9970` | `[0.239, 0.600, 0.439]` | Chain 3 / spectrum stop |
-| `arch_gold` | `#E9C46A` | `[0.914, 0.769, 0.416]` | Chain 4 / hotspot |
-| `arch_slate` | `#8D99AE` | `[0.553, 0.600, 0.682]` | Neutral target scaffold |
+`cartoon_cylindrical_helices 1`, `cartoon_helix_radius 1.95`, `cartoon_flat_sheets 1`, `cartoon_loop_radius 0.16`, `ray_trace_mode 1`, `ray_trace_gain 0.06`:
+`arch_navy` (`#2B5C8F`), `arch_coral` (`#E07A5F`), `arch_teal` (`#3D9970`), `arch_gold` (`#E9C46A`), `arch_slate` (`#8D99AE`).
 
 ---
 
 ## 4. `chimerax_soft` — ChimeraX Soft-Shadow Ceramic Cryo-EM Style
 
-Outline-free (`ray_trace_mode 0`) with strong soft shadows and ambient occlusion (`ray_shadow 1`, `ambient_occlusion_mode 1`, `ambient_occlusion_scale 25.0`, `ambient_occlusion_smooth 15`, `surface_quality 1`, `spec_reflect 0.05`).
-
-| PyMOL Color Name | Hex | RGB `[R, G, B]` | Role |
-|---|---|---|---|
-| `em_cobalt` | `#4A7C9B` | `[0.290, 0.486, 0.608]` | Subunit 1 / Binder |
-| `em_salmon` | `#E28775` | `[0.886, 0.529, 0.459]` | Subunit 2 / Hotspot |
-| `em_mint` | `#6EB599` | `[0.431, 0.710, 0.600]` | Subunit 3 / Motif |
-| `em_ochre` | `#E5B869` | `[0.898, 0.722, 0.412]` | Subunit 4 |
-| `em_clay` | `#D8D4CE` | `[0.847, 0.831, 0.808]` | Matte ceramic target surface |
+Outline-free (`ray_trace_mode 0`) with strong AO & soft shadows (`ray_shadow 1`, `ambient_occlusion_mode 1`, `ambient_occlusion_scale 25.0`, `surface_quality 1`):
+`em_cobalt` (`#4A7C9B`), `em_salmon` (`#E28775`), `em_mint` (`#6EB599`), `em_ochre` (`#E5B869`), `em_clay` (`#D8D4CE`).
 
 ---
 
 ## 5. `spotlight` — Monochrome Ghost + Jewel-Tone Spotlight
 
-Transparent porcelain scaffold (`spot_ghost_gray #E2E4E8`, `cartoon_transparency 0.62`) with opaque ball-and-stick focal residues (`stick_radius 0.25`, `stick_ball 1`).
-
-| PyMOL Color Name | Hex | RGB `[R, G, B]` | Role |
-|---|---|---|---|
-| `spot_ghost_gray` | `#E2E4E8` | `[0.886, 0.894, 0.910]` | Semi-transparent background protein |
-| `spot_crimson` | `#E63946` | `[0.902, 0.224, 0.275]` | Catalytic residues / mutation highlight |
-| `spot_cyan` | `#00B4D8` | `[0.000, 0.706, 0.847]` | Ligand / partner binder highlight |
-| `spot_amber` | `#F4A261` | `[0.957, 0.635, 0.380]` | Secondary hotspot highlight |
-| `spot_dash_gray` | `#555860` | `[0.333, 0.345, 0.376]` | Minimalist H-bond dashes |
+Transparent porcelain scaffold (`spot_ghost_gray #E2E4E8`, `cartoon_transparency 0.62`) + opaque ball-and-stick focal sites (`spot_crimson #E63946`, `spot_cyan #00B4D8`, `spot_amber #F4A261`, `spot_dash_gray #555860`).
 
 ---
 
 ## 6. `alphafold_plddt` — Canonical AlphaFold pLDDT Confidence Style
 
-| PyMOL Color Name | Hex | RGB `[R, G, B]` | pLDDT Range |
-|---|---|---|---|
-| `af_very_high` | `#0053D6` | `[0.000, 0.325, 0.839]` | $\text{pLDDT} \ge 90$ |
-| `af_confident` | `#65CBF3` | `[0.396, 0.796, 0.953]` | $70 \le \text{pLDDT} < 90$ |
-| `af_low` | `#FFDB13` | `[1.000, 0.859, 0.075]` | $50 \le \text{pLDDT} < 70$ |
-| `af_very_low` | `#FF7D45` | `[1.000, 0.490, 0.271]` | $\text{pLDDT} < 50$ |
+`af_very_high` (`#0053D6`, $\ge 90$), `af_confident` (`#65CBF3`, $70\text{–}90$), `af_low` (`#FFDB13`, $50\text{–}70$), `af_very_low` (`#FF7D45`, $< 50$).
+
+---
+
+## 7. `antibody_cdr` — Antibody CDR Loops & 4.5 Å Epitope Footprint
+
+`ab_framework_vh` (`#5C6B8A`), `ab_framework_vl` (`#9AA5B8`), `ab_antigen_surf` (`#ECEEEF`), `ab_cdr_h1` (`#4EA8DE`), `ab_cdr_h2` (`#52B788`), `ab_cdr_h3` (`#E63946`, thickened `cartoon_loop_radius 0.28`), `ab_cdr_l1` (`#F4A261`), `ab_cdr_l2` (`#E9C46A`), `ab_cdr_l3` (`#9D4EDD`).
+
+---
+
+## 8. `hydrophobic_surface` — Eisenberg Hydrophobic Complementarity
+
+`hydro_polar` (`#DCE8F2`), `hydro_neutral` (`#F5F3EE`), `hydro_moderate` (`#F2C57C`), `hydro_core` (`#D96B43`), `hydro_binder_bg` (`#A8BCE0`). Highlights binder hydrophobic anchor sidechains (`I/V/L/F/W/Y/M`) within 4.5 Å of the target.
+
+---
+
+## 9. `pocket_cavity` — Local Pocket Cutaway & Pose Overlay
+
+`pocket_surf_tint` (`#D8E2EC`, local `surface` within 6 Å at `transparency 0.42`), `pocket_res_carbon` (`#8D99AE`), `pose_ref_carbon` (`#4CB8AC`), `pose_pred_carbon` (`#E0569B`).
+
+---
+
+## 10. `diffusion_ensemble` — Multi-State Ghost Ensemble & Putty Flexibility
+
+`ens_state_early` (`#D8DCE6`, `cartoon_transparency 0.78`), `ens_state_final` (`#485CA8`, solid). Falls back to `cartoon putty` flexibility scaling when a single-state structure is supplied.
