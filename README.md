@@ -1,45 +1,60 @@
-# baker-pymol-style
+# pymol-publication-styles
 
-An agent skill and Python/PyMOL rendering toolkit that reproduces the classic **David Baker Lab / Institute for Protein Design (IPD)** figure aesthetic from **RFdiffusion 1** (*Nature* 2023), **RFdiffusion All-Atom** (*Science* 2024), **RFdiffusion 2** (*Nature Methods* 2025/2026), and **RFdiffusion 3** (*bioRxiv* 2025).
+An agent skill and Python/PyMOL rendering toolkit supporting **six classic publication-quality biomolecular visualization styles**:
 
-## Features
+1. **`baker_rfd`** *(default)* — **Baker Lab / Institute for Protein Design (IPD) RFdiffusion 1–3** aesthetic (*Nature* 2023, *Science* 2024, *Nature Methods* 2025/2026, *bioRxiv* 2025): matte cel-shaded outlines, pastel topology gradients (`#FCD4AC` → `#FCACB4` → `#9494C4` → `#5064AC`), signature motif teal (`#4CB8AC`), target sand (`#FCDCA8`) + hotspot orange (`#F08828`), and charcoal all-atom ligands.
+2. **`goodsell`** — **David Goodsell / RCSB *Molecule of the Month*** watercolor full-atom space-filling sphere illustration (`ray_trace_mode=3`, high ambient flat lighting, muted watercolor chains).
+3. **`cylindrical`** — ***Nature* / *Cell* Minimalist Cylindrical-Helix** architectural style (`cartoon_cylindrical_helices=1`, flat sheets, slim loops, deep navy + coral + teal palette).
+4. **`chimerax_soft`** — **ChimeraX Soft-Shadow / Matte Ceramic AO** cryo-EM aesthetic (outline-free `ray_trace_mode=0`, strong ambient occlusion & soft shadows).
+5. **`spotlight`** — **Monochrome Ghost + Jewel-Tone Spotlight** (semi-transparent cool porcelain scaffold + opaque crimson/cyan/amber ball-and-stick focal sites).
+6. **`alphafold_plddt`** — **Canonical AlphaFold / ColabFold pLDDT Confidence** coloring (auto-normalizes `0..1` and `0..100` B-factors).
 
-- **Exact IPD RGB Palette**: Pixel-sampled pastel topology gradients (`#FCD4AC` → `#FCACB4` → `#9494C4` → `#5064AC`), signature motif/catalytic teal (`#4CB8AC`), target sand (`#FCDCA8`) + hotspot orange (`#F08828`), and charcoal all-atom ligands (`#48484C`).
-- **Matte Cel-Shaded Ray-Tracing**: Crisp thin outlines (`ray_trace_mode=1`, `ray_trace_gain=0.10`), zero plastic specular glare (`spec_reflect=0.0`), soft high-ambient lighting (`ambient=0.50`), and ambient occlusion (`ambient_occlusion_mode=1`).
-- **Four Ready-to-Use Modes**:
-  1. `monomer` — De novo monomers, functional motif scaffolding, and design-vs-AF2/crystal overlays with automatic `align`/`cealign` RMSD reporting.
-  2. `binder` — Target surface + orange epitope hotspots + pastel de novo binder + optional interface H-bonds and crystal overlay.
-  3. `oligomer` — Symmetric assemblies (`Cn`, `Dn`, cages) with automatic subunit color cycling, top/side 90° views, and cryo-EM/nsEM map envelopes.
-  4. `active_site` — RFdiffusion 2/3 all-atom enzyme theozymes, small-molecule ligands, metal cofactors, and DNA pockets with semi-transparent scaffolds.
-- **Triple Output**: Every run writes `<prefix>.png`, `<prefix>.pse` (interactive PyMOL session), and `<prefix>.pml` (standalone PyMOL command script).
+Every run outputs three files at `--out-prefix`:
+- `<prefix>.png` — High-resolution ray-traced image
+- `<prefix>.pse` — Interactive PyMOL session
+- `<prefix>.pml` — Standalone human-readable PyMOL script
 
 ## Installation
 
-Place this repository under `~/.gemini/config/skills/baker-pymol-style/` (or your workspace `.agents/skills/baker-pymol-style/`).
+Place this repository under `~/.gemini/config/skills/pymol-publication-styles/` (or `.agents/skills/pymol-publication-styles/`).
 
-Works with either:
-- Local open-source PyMOL (`python3 scripts/render_baker.py ...`), or
-- `uv run scripts/render_baker.py ...` (auto-installs `pymol-open-source-whl` via PEP 723).
+Works with either local open-source PyMOL (`python3 scripts/render_publication.py ...`) or `uv run scripts/render_publication.py ...` (auto-installs `pymol-open-source-whl` via PEP 723).
 
-## Quick Examples
+## Examples
 
 ```bash
-# Monomer / TIM barrel
-python3 scripts/render_baker.py monomer \
-  --structure design.cif \
-  --out-prefix output/monomer
-
-# Target-binder complex with hotspots
-python3 scripts/render_baker.py binder \
+# 1. Baker Lab RFdiffusion 1-3 binder complex
+python3 scripts/render_publication.py binder \
+  --style baker_rfd \
   --complex complex.cif \
   --target-chain C --binder-chain K \
   --hotspots "resi 417+453+455+486+489+493" \
-  --out-prefix output/binder
+  --out-prefix output/binder_baker
 
-# Enzyme active site (RFD2/RFD3 style)
-python3 scripts/render_baker.py active_site \
+# 2. Goodsell Molecule of the Month watercolor spheres
+python3 scripts/render_publication.py oligomer \
+  --style goodsell \
+  --structure assembly.cif \
+  --out-prefix output/oligomer_goodsell
+
+# 3. Minimalist cylindrical-helix barrel
+python3 scripts/render_publication.py monomer \
+  --style cylindrical \
+  --structure barrel.cif \
+  --out-prefix output/barrel_cylindrical
+
+# 4. ChimeraX soft ceramic AO surface
+python3 scripts/render_publication.py binder \
+  --style chimerax_soft \
+  --complex complex.cif \
+  --target-chain C --binder-chain K \
+  --out-prefix output/binder_chimerax
+
+# 5. Monochrome ghost + jewel spotlight active site
+python3 scripts/render_publication.py active_site \
+  --style spotlight \
   --structure enzyme.cif \
   --catalytic-sele "resi 1057+1184+1185+1186" \
   --ligand-sele "resn LLK" \
-  --out-prefix output/active_site
+  --out-prefix output/active_site_spotlight
 ```
