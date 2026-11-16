@@ -28,7 +28,22 @@ Derived from Watson et al. (*Nature* 2023), Krishna et al. (*Science* 2024), Ahe
 | `ipd_metal_ochre` | `#A85838` | `[0.659, 0.345, 0.220]` | Zn(II) / Fe / Ni cofactor sphere |
 | `ipd_vh_navy` | `#344888` | `[0.204, 0.282, 0.533]` | Antibody VH chain |
 
-**Key Lighting**: `ray_trace_mode 1`, `ray_trace_gain 0.10`, `spec_reflect 0.0`, `ambient 0.50`, `direct 0.45`, `ambient_occlusion_mode 1`, `ambient_occlusion_scale 15.0`.
+**Key Lighting (Paper Cutout Illustration Theme for `baker_rfd`, `antibody_cdr`, `spotlight`)**: `specular 0`, `ray_shadow 0`, `valence 0`, `antialias 2`, `ray_trace_mode 1`, `ray_trace_disco_factor 1`, `ray_trace_gain 0.1`, `power 0.2`, `ambient 0.4`, `ray_trace_color gray30`, `stick_ball 0`, `ambient_occlusion_mode 0`, `cartoon_side_chain_helper 1`, `cartoon_smooth_loops 0`.
+
+### Paper Cutout Illustration Colors (`paper_*`)
+
+| PyMOL Color Name | Hex | RGB `[R, G, B]` | Role |
+|---|---|---|---|
+| `paper_paleblue` | `#E6EBF5` | `[0.902, 0.922, 0.961]` | Pale cool highlight / background |
+| `paper_lightblue` | `#9596C6` | `[0.584, 0.588, 0.776]` | VH framework |
+| `paper_blue` | `#6686C5` | `[0.400, 0.525, 0.773]` | CDR-H1 |
+| `paper_darkblue` | `#4B5FAA` | `[0.294, 0.373, 0.667]` | CDR-H2 |
+| `paper_palepurple` | `#F5E6EE` | `[0.961, 0.902, 0.933]` | Pale lavender highlight |
+| `paper_lightpurple` | `#E4B9CD` | `[0.894, 0.725, 0.804]` | VL framework |
+| `paper_purple` | `#D59AB5` | `[0.835, 0.604, 0.710]` | CDR-L1 / CDR-L2 |
+| `paper_darkpurple` | `#AF698C` | `[0.686, 0.412, 0.549]` | CDR-L3 |
+| `paper_melon` | `#FFC6B2` | `[1.000, 0.776, 0.698]` | Antigen / base scaffold cartoon |
+| `paper_teal` | `#4FB9AF` | `[0.310, 0.725, 0.686]` | CDR-H3 / focal mutation highlight |
 
 ---
 
@@ -65,9 +80,10 @@ Transparent porcelain scaffold (`spot_ghost_gray #E2E4E8`, `cartoon_transparency
 
 ---
 
-## 7. `antibody_cdr` — Antibody CDR Loops & 4.5 Å Epitope Footprint
+## 7. `antibody_cdr` — Paper-Illustration Antibody CDR Loops
 
-`ab_framework_vh` (`#5C6B8A`), `ab_framework_vl` (`#9AA5B8`), `ab_antigen_surf` (`#ECEEEF`), `ab_cdr_h1` (`#4EA8DE`), `ab_cdr_h2` (`#52B788`), `ab_cdr_h3` (`#E63946`, thickened `cartoon_loop_radius 0.28`), `ab_cdr_l1` (`#F4A261`), `ab_cdr_l2` (`#E9C46A`), `ab_cdr_l3` (`#9D4EDD`).
+Uses the `paper_*` palette and clean paper-cutout ray-tracing (`ray_trace_color gray30`, `valence 0`, `stick_ball 0`, `power 0.2`, `ambient 0.4`):
+`paper_melon` (`#FFC6B2`, antigen), `paper_lightblue` (`#9596C6`, VH), `paper_blue` (`#6686C5`, CDR-H1), `paper_darkblue` (`#4B5FAA`, CDR-H2), `paper_teal` (`#4FB9AF`, CDR-H3), `paper_lightpurple` (`#E4B9CD`, VL), `paper_purple` (`#D59AB5`, CDR-L1/L2), `paper_darkpurple` (`#AF698C`, CDR-L3).
 
 ---
 

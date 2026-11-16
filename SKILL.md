@@ -52,12 +52,18 @@ Every subcommand supports:
 
 ## Subcommands (`scripts/render_publication.py`)
 
-### 1. Monomer, Overlay, & Ensemble (`monomer`)
+### 1. Monomer, Overlay, Mutation Highlight, & Ensemble (`monomer`)
 ```bash
+# Single-site mutation / motif highlight (paper_melon + paper_teal + zoom buffer=8)
 python3 <SKILL_DIR>/scripts/render_publication.py monomer \
-  --style baker_rfd \
-  --structure design.cif \
-  [--reference af2.cif] [--motif-sele "resi 20-35"] \
+  --style baker_rfd --structure protein.cif \
+  --color-mode melon --motif-sele "chain A and resi 276" --zoom-motif \
+  --out-prefix output/mutation_276
+
+# Design vs. AF2 overlay
+python3 <SKILL_DIR>/scripts/render_publication.py monomer \
+  --style baker_rfd --structure design.cif \
+  --reference af2.cif --motif-sele "resi 20-35" \
   --out-prefix output/monomer
 ```
 
@@ -86,10 +92,11 @@ python3 <SKILL_DIR>/scripts/render_publication.py active_site \
   --with-inset --out-prefix output/active_site
 ```
 
-### 5. Antibody CDR Loops + 4.5 Å Epitope Footprint (`antibody`)
+### 5. Antibody CDR Loops + Epitope Contacts (`antibody`)
 ```bash
 python3 <SKILL_DIR>/scripts/render_publication.py antibody \
   --complex ab_ag.cif --antigen-chain A --heavy-chain H --light-chain L \
+  [--antigen-repr cartoon|surface] \
   --cdr-h1 27-38 --cdr-h2 56-66 --cdr-h3 105-117 \
   --cdr-l1 27-39 --cdr-l2 55-60 --cdr-l3 105-115 \
   --with-inset --auto-crop --out-prefix output/antibody

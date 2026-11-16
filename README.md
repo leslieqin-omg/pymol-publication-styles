@@ -13,12 +13,12 @@ And `--with-inset` automatically generates `<prefix>_global.png`, `<prefix>_inse
 
 ## Style Gallery (10 Built-In Styles)
 
-### 1. `baker_rfd` *(Default)* — Baker Lab / IPD (RFdiffusion 1–3)
-Matte cel-shaded outlines (`ray_trace_mode=1`), soft pastel topology gradients (`#FCD4AC` → `#FCACB4` → `#9494C4` → `#5064AC`), signature motif/catalytic teal (`#4CB8AC`), warm sand target (`#FCDCA8`) + orange hotspot (`#F08828`), and charcoal all-atom ligands (`#48484C`) — explicitly avoiding RFD4's aesthetic.
+### 1. `baker_rfd` *(Default)* — Baker Lab / IPD (RFdiffusion 1–3) & Paper Cutout Aesthetic
+Matte paper-cutout cel-shaded outlines (`ray_trace_mode=1`, `ray_trace_color=gray30`, `specular=0`, `valence=0`, `power=0.2`, `ambient=0.4`), soft pastel topology gradients (`#FCD4AC` → `#FCACB4` → `#9494C4` → `#5064AC`), `paper_*` palettes (`paper_melon #FFC6B2` + `paper_teal #4FB9AF`), warm sand target (`#FCDCA8`) + orange hotspot (`#F08828`), and charcoal all-atom ligands (`#48484C`) — explicitly avoiding RFD4's aesthetic.
 
-| Monomer (`6WVS`) | Target–Binder Complex (`7UHB`) | Enzyme Active Site (`5AN7`) |
-| :---: | :---: | :---: |
-| ![Baker RFD Monomer](assets/baker_rfd_monomer.png) | ![Baker RFD Binder](assets/baker_rfd_binder.png) | ![Baker RFD Active Site](assets/baker_rfd_active_site.png) |
+| Monomer (`6WVS`) | Target–Binder Complex (`7UHB`) | Enzyme Active Site (`5AN7`) | Mutation Zoom (`--color-mode melon --zoom-motif`) |
+| :---: | :---: | :---: | :---: |
+| ![Baker RFD Monomer](assets/baker_rfd_monomer.png) | ![Baker RFD Binder](assets/baker_rfd_binder.png) | ![Baker RFD Active Site](assets/baker_rfd_active_site.png) | ![Paper Mutation Highlight](assets/paper_mutation.png) |
 
 ---
 
@@ -38,8 +38,8 @@ Generated directly via `showcase --scene monomer`:
 
 ### 7–10. AIDD-Specialized Styles & Automated Figure Layouts
 
-#### 7. `antibody_cdr` — Antibody CDR Loops + 4.5 Å Epitope Footprint (`antibody --with-inset`)
-| Global Complex + Framed CDR–Antigen Interface Inset (`5TPN`) |
+#### 7. `antibody_cdr` — Paper-Cutout Antibody CDR Loops & Interface Contacts (`antibody --with-inset`)
+| Global Complex + Framed Fv CDR–Antigen Interface Inset (`5TPN`) |
 | :---: |
 | ![Antibody CDR Composite](assets/antibody_cdr_composite.png) |
 
@@ -83,10 +83,16 @@ Works with either local open-source PyMOL (`python3 scripts/render_publication.p
 ## CLI Quick Examples
 
 ```bash
-# 1. Antibody CDR loops + 4.5 A epitope footprint + inset composite
+# 1. Antibody CDR loops + interface contacts + inset composite
 python3 scripts/render_publication.py antibody \
   --complex ab_ag.cif --antigen-chain A --heavy-chain H --light-chain L \
   --with-inset --auto-crop --out-prefix output/antibody
+
+# 1b. Paper-cutout single-site mutation / motif zoom
+python3 scripts/render_publication.py monomer \
+  --structure protein.cif --color-mode melon \
+  --motif-sele "chain A and resi 276" --zoom-motif \
+  --out-prefix output/mutation_276
 
 # 2. Hydrophobic surface complementarity (transparent + auto-cropped)
 python3 scripts/render_publication.py binder \

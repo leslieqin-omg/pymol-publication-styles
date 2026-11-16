@@ -131,6 +131,18 @@ PUBLICATION_PALETTES: Dict[str, List[float]] = {
     # 10. Diffusion Trajectory / Conformational Ensemble Palette
     "ens_state_early": [0.847, 0.863, 0.902],      # #D8DCE6
     "ens_state_final": [0.282, 0.361, 0.659],      # #485CA8
+
+    # 11. Paper Cutout Illustration Palette (paper_*)
+    "paper_paleblue": [230.0 / 255, 235.0 / 255, 245.0 / 255],     # #E6EBF5
+    "paper_lightblue": [149.0 / 255, 150.0 / 255, 198.0 / 255],    # #9596C6
+    "paper_blue": [102.0 / 255, 134.0 / 255, 197.0 / 255],         # #6686C5
+    "paper_darkblue": [75.0 / 255, 95.0 / 255, 170.0 / 255],       # #4B5FAA
+    "paper_palepurple": [245.0 / 255, 230.0 / 255, 238.0 / 255],   # #F5E6EE
+    "paper_lightpurple": [228.0 / 255, 185.0 / 255, 205.0 / 255],  # #E4B9CD
+    "paper_purple": [213.0 / 255, 154.0 / 255, 181.0 / 255],       # #D59AB5
+    "paper_darkpurple": [175.0 / 255, 105.0 / 255, 140.0 / 255],   # #AF698C
+    "paper_melon": [255.0 / 255, 198.0 / 255, 178.0 / 255],        # #FFC6B2
+    "paper_teal": [0.310, 0.725, 0.686],                           # #4FB9AF
 }
 
 IPD_PALETTE = PUBLICATION_PALETTES
@@ -282,14 +294,14 @@ STYLE_DEFAULTS: Dict[str, Dict[str, str]] = {
         "dash_color": "white",
     },
     "antibody_cdr": {
-        "target_color": "ab_antigen_surf",
-        "hotspot_color": "ab_cdr_h3",
-        "binder_color": "ab_framework_vh",
-        "motif_color": "ab_cdr_h3",
-        "connector_color": "ab_framework_vl",
-        "ligand_color": "ab_cdr_h1",
+        "target_color": "paper_melon",
+        "hotspot_color": "paper_teal",
+        "binder_color": "paper_lightblue",
+        "motif_color": "paper_teal",
+        "connector_color": "paper_paleblue",
+        "ligand_color": "paper_blue",
         "reference_color": "ipd_model_gray",
-        "dash_color": "spot_dash_gray",
+        "dash_color": "gray30",
     },
     "hydrophobic_surface": {
         "target_color": "hydro_neutral",
@@ -365,27 +377,46 @@ def apply_theme(
         ("fog_start", 0.45),
         ("two_sided_lighting", 1),
         ("antialias", 2),
-        ("cartoon_oval_length", 1.20),
-        ("cartoon_oval_width", 0.25),
-        ("cartoon_rect_length", 1.20),
-        ("cartoon_rect_width", 0.28),
-        ("cartoon_loop_radius", 0.18),
-        ("cartoon_tube_radius", 0.45),
         ("cartoon_sampling", 14),
         ("cartoon_smooth_loops", 0),
         ("cartoon_side_chain_helper", 1),
         ("cartoon_fancy_helices", 0),
         ("cartoon_highlight_color", -1),
         ("stick_radius", 0.22),
-        ("stick_ball", 1),
-        ("stick_ball_ratio", 1.4),
         ("dash_gap", 0.35),
         ("dash_radius", 0.07),
         ("dash_round_ends", 1),
     ]
 
+    paper_illustration_settings: List[Tuple[str, object]] = [
+        ("specular", 0),
+        ("ray_shadow", 0),
+        ("valence", 0),
+        ("antialias", 2),
+        ("ray_trace_mode", 1),
+        ("ray_trace_disco_factor", 1),
+        ("ray_trace_gain", 0.1),
+        ("power", 0.2),
+        ("ambient", 0.4),
+        ("ray_trace_color", "gray30"),
+        ("stick_ball", 0),
+        ("ambient_occlusion_mode", 0),
+        ("cartoon_cylindrical_helices", 1 if cylindrical_helices else 0),
+    ]
+
+    classic_cartoon_geometry: List[Tuple[str, object]] = [
+        ("cartoon_oval_length", 1.20),
+        ("cartoon_oval_width", 0.25),
+        ("cartoon_rect_length", 1.20),
+        ("cartoon_rect_width", 0.28),
+        ("cartoon_loop_radius", 0.18),
+        ("cartoon_tube_radius", 0.45),
+        ("stick_ball", 1),
+        ("stick_ball_ratio", 1.4),
+    ]
+
     if style == "goodsell":
-        style_settings: List[Tuple[str, object]] = [
+        style_settings: List[Tuple[str, object]] = classic_cartoon_geometry + [
             ("ray_trace_mode", 3),
             ("ray_trace_gain", 0.12),
             ("ray_trace_color", "black"),
@@ -406,7 +437,7 @@ def apply_theme(
         ]
     elif style == "cylindrical":
         cyl = True if cylindrical_helices is None else cylindrical_helices
-        style_settings = [
+        style_settings = classic_cartoon_geometry + [
             ("ray_trace_mode", 1),
             ("ray_trace_gain", 0.06),
             ("ray_trace_color", "black"),
@@ -425,7 +456,7 @@ def apply_theme(
             ("cartoon_loop_radius", 0.16),
         ]
     elif style == "chimerax_soft":
-        style_settings = [
+        style_settings = classic_cartoon_geometry + [
             ("ray_trace_mode", 0),
             ("ambient", 0.42),
             ("direct", 0.48),
@@ -441,24 +472,11 @@ def apply_theme(
             ("cartoon_cylindrical_helices", 1 if cylindrical_helices else 0),
         ]
     elif style == "spotlight":
-        style_settings = [
-            ("ray_trace_mode", 1),
-            ("ray_trace_gain", 0.07),
-            ("ray_trace_color", "black"),
-            ("ambient", 0.50),
-            ("direct", 0.45),
-            ("reflect", 0.22),
-            ("spec_reflect", 0.0),
-            ("light_count", 4),
-            ("ray_shadow", 0),
-            ("ambient_occlusion_mode", 1),
-            ("ambient_occlusion_scale", 15.0),
-            ("ambient_occlusion_smooth", 10),
+        style_settings = list(paper_illustration_settings) + [
             ("stick_radius", 0.25),
-            ("cartoon_cylindrical_helices", 1 if cylindrical_helices else 0),
         ]
     elif style == "alphafold_plddt":
-        style_settings = [
+        style_settings = classic_cartoon_geometry + [
             ("ray_trace_mode", 1),
             ("ray_trace_gain", 0.08),
             ("ray_trace_color", "black"),
@@ -474,24 +492,11 @@ def apply_theme(
             ("cartoon_cylindrical_helices", 1 if cylindrical_helices else 0),
         ]
     elif style == "antibody_cdr":
-        style_settings = [
-            ("ray_trace_mode", 1),
-            ("ray_trace_gain", 0.09),
-            ("ray_trace_color", "black"),
-            ("ambient", 0.50),
-            ("direct", 0.45),
-            ("reflect", 0.25),
-            ("spec_reflect", 0.0),
-            ("light_count", 4),
-            ("ray_shadow", 0),
-            ("ambient_occlusion_mode", 1),
-            ("ambient_occlusion_scale", 15.0),
-            ("ambient_occlusion_smooth", 10),
+        style_settings = list(paper_illustration_settings) + [
             ("surface_quality", 1),
-            ("cartoon_cylindrical_helices", 1 if cylindrical_helices else 0),
         ]
     elif style == "hydrophobic_surface":
-        style_settings = [
+        style_settings = classic_cartoon_geometry + [
             ("ray_trace_mode", 1),
             ("ray_trace_gain", 0.06),
             ("ray_trace_color", "black"),
@@ -508,7 +513,7 @@ def apply_theme(
             ("cartoon_cylindrical_helices", 1 if cylindrical_helices else 0),
         ]
     elif style == "pocket_cavity":
-        style_settings = [
+        style_settings = classic_cartoon_geometry + [
             ("ray_trace_mode", 1),
             ("ray_trace_gain", 0.08),
             ("ray_trace_color", "black"),
@@ -524,10 +529,10 @@ def apply_theme(
             ("surface_quality", 1),
             ("cartoon_cylindrical_helices", 1 if cylindrical_helices else 0),
         ]
-    else:  # baker_rfd & diffusion_ensemble
-        style_settings = [
+    elif style == "diffusion_ensemble":
+        style_settings = classic_cartoon_geometry + [
             ("ray_trace_mode", 1),
-            ("ray_trace_gain", 0.10 if style == "baker_rfd" else 0.08),
+            ("ray_trace_gain", 0.08),
             ("ray_trace_color", "black"),
             ("ray_trace_disco_factor", 1.0),
             ("ray_trace_slope_factor", 0.6),
@@ -539,10 +544,12 @@ def apply_theme(
             ("light_count", 4),
             ("ray_shadow", 0),
             ("ambient_occlusion_mode", 1),
-            ("ambient_occlusion_scale", 15.0 if style == "baker_rfd" else 12.0),
+            ("ambient_occlusion_scale", 12.0),
             ("ambient_occlusion_smooth", 10),
             ("cartoon_cylindrical_helices", 1 if cylindrical_helices else 0),
         ]
+    else:  # baker_rfd (Paper Illustration Aesthetic)
+        style_settings = list(paper_illustration_settings)
 
     _rec(pml_lines, f"\n# --- Apply Publication Theme Settings ({style}) ---")
     cmd.bg_color("white")
@@ -937,6 +944,8 @@ def render_monomer(
     reference: Optional[str] = None,
     motif_sele: Optional[str] = None,
     color_mode: str = "spectrum",
+    base_color: Optional[str] = None,
+    zoom_motif: bool = False,
     design_role: str = "gray",
     palette_mode: str = "rfd1",
     cylindrical_helices: Optional[bool] = None,
@@ -948,7 +957,7 @@ def render_monomer(
     auto_crop: bool = False,
     crop_padding: int = 24,
 ) -> Tuple[str, str, str]:
-    """Render a monomer, motif-scaffolded design, or design-vs-validation overlay."""
+    """Render a monomer, motif-scaffolded design, mutation highlight, or validation overlay."""
     _validate_style(style)
     defaults = STYLE_DEFAULTS[style]
     cycle = STYLE_CHAIN_CYCLES[style]
@@ -999,7 +1008,11 @@ def render_monomer(
                 _rec(pml, f"color {defaults['reference_color']}, reference")
                 color_style_spectrum(cmd, "design", style=style, palette_mode=palette_mode, pml_lines=pml)
         else:
-            if color_mode == "solid":
+            if color_mode == "melon" or base_color:
+                fill_col = base_color or "paper_melon"
+                cmd.color(fill_col, "design and polymer.protein")
+                _rec(pml, f"color {fill_col}, design and polymer.protein")
+            elif color_mode == "solid":
                 cmd.color(defaults["binder_color"], "design and polymer.protein")
                 _rec(pml, f"color {defaults['binder_color']}, design and polymer.protein")
             elif color_mode == "chain":
@@ -1015,22 +1028,28 @@ def render_monomer(
         if style == "goodsell":
             _apply_goodsell_spheres(cmd, "motif_region", base_color=defaults["motif_color"], pml_lines=pml)
         else:
-            cmd.color(defaults["motif_color"], "motif_region")
+            m_col = "paper_teal" if (color_mode == "melon" or base_color) else defaults["motif_color"]
+            cmd.color(m_col, "motif_region")
             cmd.set("cartoon_transparency", 0.0, "motif_region")
-            cmd.show("sticks", "motif_region and not hydro and not resn GLY")
-            cmd.util.cnc("motif_region")
+            cmd.show("sticks", "motif_region and not hydro")
+            if color_mode != "melon" and not base_color:
+                cmd.util.cnc("motif_region")
             _rec(
                 pml,
                 f"select motif_region, design and ({motif_sele})\n"
-                f"color {defaults['motif_color']}, motif_region\n"
+                f"color {m_col}, motif_region\n"
                 "set cartoon_transparency, 0.0, motif_region\n"
-                "show sticks, motif_region and not hydro and not resn GLY\n"
-                "util.cnc motif_region",
+                "show sticks, motif_region and not hydro",
             )
 
-    cmd.orient("all")
-    cmd.zoom("all", buffer=3.0)
-    _rec(pml, "orient all\nzoom all, buffer=3.0")
+    if zoom_motif and motif_sele:
+        cmd.orient("motif_region")
+        cmd.zoom("motif_region", buffer=8.0)
+        _rec(pml, "orient motif_region\nzoom motif_region, buffer=8.0")
+    else:
+        cmd.orient("all")
+        cmd.zoom("all", buffer=3.0)
+        _rec(pml, "orient all\nzoom all, buffer=3.0")
     return render_outputs(
         cmd,
         out_prefix,
@@ -1107,7 +1126,7 @@ def render_binder(
         hydro_anchors = f"byres (({binder_sel}) and resn ILE+VAL+LEU+PHE+TRP+TYR+MET within 4.5 of ({target_sel}))"
         cmd.select("binder_anchors", hydro_anchors)
         if cmd.count_atoms("binder_anchors") > 0:
-            cmd.show("sticks", "binder_anchors and not hydro and not resn GLY")
+            cmd.show("sticks", "binder_anchors and not hydro")
             cmd.color("hydro_core", "binder_anchors")
             cmd.util.cnc("binder_anchors")
         _rec(
@@ -1115,7 +1134,7 @@ def render_binder(
             f"show surface, {target_sel}\nshow cartoon, {binder_sel}\ncolor {b_color}, {binder_sel}\n"
             f"set cartoon_transparency, 0.30, {binder_sel}\n"
             f"select binder_anchors, {hydro_anchors}\n"
-            "show sticks, binder_anchors and not hydro and not resn GLY\ncolor hydro_core, binder_anchors\nutil.cnc binder_anchors",
+            "show sticks, binder_anchors and not hydro\ncolor hydro_core, binder_anchors\nutil.cnc binder_anchors",
         )
     else:
         if target_repr in ("surface", "both"):
@@ -1173,7 +1192,7 @@ def render_binder(
     if (show_interface_sticks or zoom_interface or with_inset) and style != "goodsell":
         cmd.select("iface_binder", f"byres (({binder_sel}) within 4.0 of ({target_sel}))")
         cmd.select("iface_target", f"byres (({target_sel}) within 4.0 of ({binder_sel}))")
-        cmd.show("sticks", "(iface_binder or iface_target) and not hydro and not resn GLY")
+        cmd.show("sticks", "(iface_binder or iface_target) and not hydro")
         cmd.util.cnc("iface_binder or iface_target")
         cmd.distance("iface_hbonds", "iface_binder", "iface_target", cutoff=3.5, mode=2)
         cmd.set("dash_color", defaults["dash_color"])
@@ -1182,7 +1201,7 @@ def render_binder(
             pml,
             f"select iface_binder, byres (({binder_sel}) within 4.0 of ({target_sel}))\n"
             f"select iface_target, byres (({target_sel}) within 4.0 of ({binder_sel}))\n"
-            "show sticks, (iface_binder or iface_target) and not hydro and not resn GLY\n"
+            "show sticks, (iface_binder or iface_target) and not hydro\n"
             "util.cnc iface_binder or iface_target\n"
             "distance iface_hbonds, iface_binder, iface_target, cutoff=3.5, mode=2\n"
             f"set dash_color, {defaults['dash_color']}\nhide labels, iface_hbonds",
@@ -1318,13 +1337,13 @@ def render_oligomer(
             _apply_goodsell_spheres(cmd, "sym_motif", base_color=defaults["motif_color"], pml_lines=pml)
         else:
             cmd.color(defaults["motif_color"], "sym_motif")
-            cmd.show("sticks", "sym_motif and not hydro and not resn GLY")
+            cmd.show("sticks", "sym_motif and not hydro")
             cmd.util.cnc("sym_motif")
             _rec(
                 pml,
                 f"select sym_motif, oligomer and ({motif_sele})\n"
                 f"color {defaults['motif_color']}, sym_motif\n"
-                "show sticks, sym_motif and not hydro and not resn GLY\n"
+                "show sticks, sym_motif and not hydro\n"
                 "util.cnc sym_motif",
             )
 
@@ -1495,14 +1514,14 @@ def render_active_site(
         if style == "goodsell":
             _apply_goodsell_spheres(cmd, "catalytic_res", base_color=defaults["motif_color"], pml_lines=pml)
         else:
-            cmd.show("sticks", "catalytic_res and not hydro and not resn GLY")
+            cmd.show("sticks", "catalytic_res and not hydro")
             cmd.color(defaults["connector_color"], "catalytic_res and name CA+CB+N+C+O")
             cmd.color(defaults["motif_color"], "catalytic_res and not name CA+CB+N+C+O")
             cmd.util.cnc("catalytic_res")
             _rec(
                 pml,
                 f"select catalytic_res, enzyme and ({catalytic_sele})\n"
-                "show sticks, catalytic_res and not hydro and not resn GLY\n"
+                "show sticks, catalytic_res and not hydro\n"
                 f"color {defaults['connector_color']}, catalytic_res and name CA+CB+N+C+O\n"
                 f"color {defaults['motif_color']}, catalytic_res and not name CA+CB+N+C+O\n"
                 "util.cnc catalytic_res",
@@ -1609,6 +1628,7 @@ def render_antibody(
     out_prefix: str,
     light_chain: Optional[str] = None,
     style: str = "antibody_cdr",
+    antigen_repr: str = "cartoon",
     cdr_h1: str = "26-35",
     cdr_h2: str = "50-65",
     cdr_h3: str = "95-102",
@@ -1627,9 +1647,9 @@ def render_antibody(
     auto_crop: bool = False,
     crop_padding: int = 24,
 ) -> Tuple[str, ...]:
-    """Render an antibody/nanobody-antigen complex with color-coded CDR loops and 4.5 A epitope footprints."""
+    """Render an antibody/nanobody-antigen complex in paper-illustration palette with CDR loops."""
     _validate_style(style)
-    pml: List[str] = [f"# Publication Style ({style}): Antibody CDR & Epitope Footprint"]
+    pml: List[str] = [f"# Publication Style ({style}): Antibody CDR & Paper Illustration"]
     apply_theme(cmd, style=style, cylindrical_helices=cylindrical_helices, transparent=transparent, pml_lines=pml)
 
     verify_and_load(cmd, complex_path, "ab_complex", pml_lines=pml)
@@ -1648,21 +1668,26 @@ def render_antibody(
     if cmd.count_atoms(vh_sel) == 0:
         raise ValueError(f"Heavy chain selection '{vh_sel}' matched 0 atoms.")
 
-    # Antigen surface
-    cmd.show("surface", ag_sel)
-    cmd.set("surface_color", "ab_antigen_surf", ag_sel)
-    cmd.color("ab_antigen_surf", ag_sel)
-    _rec(pml, f"show surface, {ag_sel}\nset surface_color, ab_antigen_surf, {ag_sel}\ncolor ab_antigen_surf, {ag_sel}")
+    # Antigen (warm melon cartoon by default, or optional surface)
+    if antigen_repr == "surface":
+        cmd.show("surface", ag_sel)
+        cmd.set("surface_color", "paper_melon", ag_sel)
+        cmd.color("paper_melon", ag_sel)
+        _rec(pml, f"show surface, {ag_sel}\nset surface_color, paper_melon, {ag_sel}\ncolor paper_melon, {ag_sel}")
+    else:
+        cmd.show("cartoon", ag_sel)
+        cmd.color("paper_melon", ag_sel)
+        _rec(pml, f"show cartoon, {ag_sel}\ncolor paper_melon, {ag_sel}")
 
-    # Heavy & optional light framework (Fv by default to avoid constant-domain breaks)
+    # Heavy & optional light framework (paper blue / paper purple families)
     cmd.show("cartoon", vh_sel)
-    cmd.color("ab_framework_vh", vh_sel)
-    _rec(pml, f"show cartoon, {vh_sel}\ncolor ab_framework_vh, {vh_sel}")
+    cmd.color("paper_lightblue", vh_sel)
+    _rec(pml, f"show cartoon, {vh_sel}\ncolor paper_lightblue, {vh_sel}")
 
     cdr_specs: List[Tuple[str, str, str, str]] = [
-        ("cdr_h1", heavy_chain, cdr_h1, "ab_cdr_h1"),
-        ("cdr_h2", heavy_chain, cdr_h2, "ab_cdr_h2"),
-        ("cdr_h3", heavy_chain, cdr_h3, "ab_cdr_h3"),
+        ("cdr_h1", heavy_chain, cdr_h1, "paper_blue"),
+        ("cdr_h2", heavy_chain, cdr_h2, "paper_darkblue"),
+        ("cdr_h3", heavy_chain, cdr_h3, "paper_teal"),
     ]
     if light_chain:
         vl_sel = f"ab_complex and chain {light_chain} and polymer.protein"
@@ -1673,13 +1698,13 @@ def render_antibody(
         if cmd.count_atoms(vl_sel) == 0:
             raise ValueError(f"Light chain selection '{vl_sel}' matched 0 atoms.")
         cmd.show("cartoon", vl_sel)
-        cmd.color("ab_framework_vl", vl_sel)
-        _rec(pml, f"show cartoon, {vl_sel}\ncolor ab_framework_vl, {vl_sel}")
+        cmd.color("paper_lightpurple", vl_sel)
+        _rec(pml, f"show cartoon, {vl_sel}\ncolor paper_lightpurple, {vl_sel}")
         cdr_specs.extend(
             [
-                ("cdr_l1", light_chain, cdr_l1, "ab_cdr_l1"),
-                ("cdr_l2", light_chain, cdr_l2, "ab_cdr_l2"),
-                ("cdr_l3", light_chain, cdr_l3, "ab_cdr_l3"),
+                ("cdr_l1", light_chain, cdr_l1, "paper_purple"),
+                ("cdr_l2", light_chain, cdr_l2, "paper_purple"),
+                ("cdr_l3", light_chain, cdr_l3, "paper_darkpurple"),
             ]
         )
 
@@ -1694,23 +1719,23 @@ def render_antibody(
         _rec(pml, f"select {name}, {sel_expr}\nalter {name}, ss='L'\ncolor {col}, {name}")
         cdr_names.append(name)
 
-        # Project smooth atom-level epitope footprint onto antigen surface
-        fp_name = f"epitope_{name}"
-        fp_expr = f"({ag_sel}) within {footprint_cutoff} of ({name})"
-        if cmd.count_atoms(fp_expr) > 0:
-            cmd.select(fp_name, fp_expr)
-            cmd.color(col, fp_name)
-            cmd.set("surface_color", col, fp_name)
-            _rec(pml, f"select {fp_name}, {fp_expr}\ncolor {col}, {fp_name}\nset surface_color, {col}, {fp_name}")
+        if antigen_repr == "surface":
+            fp_name = f"epitope_{name}"
+            fp_expr = f"({ag_sel}) within {footprint_cutoff} of ({name})"
+            if cmd.count_atoms(fp_expr) > 0:
+                cmd.select(fp_name, fp_expr)
+                cmd.color(col, fp_name)
+                cmd.set("surface_color", col, fp_name)
+                _rec(pml, f"select {fp_name}, {fp_expr}\ncolor {col}, {fp_name}\nset surface_color, {col}, {fp_name}")
 
     cmd.rebuild()
     _rec(pml, "rebuild")
 
-    # Show sticks only on CDR residues actually contacting antigen, and draw H-bonds
+    # Show clean contacting CDR & epitope sticks + polar contacts
     if cdr_names:
         all_cdr_expr = " or ".join(cdr_names)
         cmd.select("cdr_all", all_cdr_expr)
-        ab_contacts_expr = f"byres (cdr_all within {footprint_cutoff} of ({ag_sel})) and not resn GLY and not hydro"
+        ab_contacts_expr = f"byres (cdr_all within {footprint_cutoff} of ({ag_sel})) and not hydro"
         if cmd.count_atoms(ab_contacts_expr) > 0:
             cmd.select("cdr_contacts", ab_contacts_expr)
             cmd.show("sticks", "cdr_contacts")
@@ -1718,15 +1743,20 @@ def render_antibody(
             _rec(pml, f"select cdr_contacts, {ab_contacts_expr}\nshow sticks, cdr_contacts\nutil.cnc cdr_contacts")
 
         cmd.select("epitope_all", f"byres (({ag_sel}) within {footprint_cutoff} of cdr_all)")
+        if antigen_repr == "cartoon" and cmd.count_atoms("epitope_all") > 0:
+            cmd.show("sticks", "epitope_all and not hydro")
+            cmd.util.cnc("epitope_all")
+            _rec(pml, "show sticks, epitope_all and not hydro\nutil.cnc epitope_all")
+
         cmd.distance("ab_hbonds", "cdr_all", "epitope_all", cutoff=3.5, mode=2)
-        cmd.set("dash_color", "spot_dash_gray")
+        cmd.set("dash_color", "gray30")
         cmd.hide("labels", "ab_hbonds")
         _rec(
             pml,
             f"select cdr_all, {all_cdr_expr}\n"
             f"select epitope_all, byres (({ag_sel}) within {footprint_cutoff} of cdr_all)\n"
             "distance ab_hbonds, cdr_all, epitope_all, cutoff=3.5, mode=2\n"
-            "set dash_color, spot_dash_gray\nhide labels, ab_hbonds",
+            "set dash_color, gray30\nhide labels, ab_hbonds",
         )
 
     if with_inset:
@@ -1746,8 +1776,8 @@ def render_antibody(
         )
         focus_sel = "cdr_all or epitope_all" if cmd.count_atoms("cdr_all or epitope_all") > 0 else vh_sel
         cmd.orient(focus_sel)
-        cmd.zoom(focus_sel, buffer=4.5)
-        _rec(pml, f"orient {focus_sel}\nzoom {focus_sel}, buffer=4.5")
+        cmd.zoom(focus_sel, buffer=8.0)
+        _rec(pml, f"orient {focus_sel}\nzoom {focus_sel}, buffer=8.0")
         i_out = render_outputs(
             cmd,
             f"{out_prefix}_inset",
@@ -1867,7 +1897,7 @@ def render_ligand_pocket(
     cmd.show("surface", "pocket_res")
     cmd.set("surface_color", defaults["target_color"], "pocket_res")
     cmd.set("transparency", 0.42, "pocket_res")
-    cmd.show("sticks", "pocket_res and not hydro and not resn GLY")
+    cmd.show("sticks", "pocket_res and not hydro")
     cmd.color("pocket_res_carbon", "pocket_res")
     cmd.util.cnc("pocket_res")
     _rec(
@@ -1875,7 +1905,7 @@ def render_ligand_pocket(
         f"select pocket_res, byres ((complex and polymer.protein) within {pocket_radius} of ({lig_sel}))\n"
         f"show surface, pocket_res\nset surface_color, {defaults['target_color']}, pocket_res\n"
         "set transparency, 0.42, pocket_res\n"
-        "show sticks, pocket_res and not hydro and not resn GLY\n"
+        "show sticks, pocket_res and not hydro\n"
         "color pocket_res_carbon, pocket_res\nutil.cnc pocket_res",
     )
 

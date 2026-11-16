@@ -75,7 +75,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_mono.add_argument("--structure", required=True, help="Path to structure (.pdb / .cif)")
     p_mono.add_argument("--reference", help="Optional AF2/AF3/crystal structure to superimpose")
     p_mono.add_argument("--motif-sele", help="Optional PyMOL selection for functional motif / focal site")
-    p_mono.add_argument("--color-mode", choices=["spectrum", "solid", "chain"], default="spectrum")
+    p_mono.add_argument("--color-mode", choices=["spectrum", "solid", "chain", "melon"], default="spectrum")
+    p_mono.add_argument("--base-color", default=None, help="Override base protein color (e.g. paper_melon)")
+    p_mono.add_argument("--zoom-motif", action="store_true", help="Zoom onto --motif-sele with buffer=8.0")
     p_mono.add_argument("--design-role", choices=["gray", "colored"], default="gray")
     p_mono.add_argument("--palette", choices=["rfd1", "rfd2"], default="rfd1")
     _add_common_args(p_mono)
@@ -124,6 +126,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_ab.add_argument("--antigen-chain", required=True, help="Chain ID of antigen")
     p_ab.add_argument("--heavy-chain", required=True, help="Chain ID of heavy chain / VHH")
     p_ab.add_argument("--light-chain", help="Optional chain ID of light chain")
+    p_ab.add_argument("--antigen-repr", choices=["cartoon", "surface"], default="cartoon", help="Antigen representation (default: cartoon)")
     p_ab.add_argument("--cdr-h1", default="26-35", help="CDR-H1 residue range (default: 26-35)")
     p_ab.add_argument("--cdr-h2", default="50-65", help="CDR-H2 residue range (default: 50-65)")
     p_ab.add_argument("--cdr-h3", default="95-102", help="CDR-H3 residue range (default: 95-102)")
@@ -186,6 +189,8 @@ def main() -> None:
                 reference=args.reference,
                 motif_sele=args.motif_sele,
                 color_mode=args.color_mode,
+                base_color=args.base_color,
+                zoom_motif=args.zoom_motif,
                 design_role=args.design_role,
                 palette_mode=args.palette,
                 cylindrical_helices=args.cylindrical_helices,
@@ -278,6 +283,7 @@ def main() -> None:
                 light_chain=args.light_chain,
                 out_prefix=args.out_prefix,
                 style=args.style,
+                antigen_repr=args.antigen_repr,
                 cdr_h1=args.cdr_h1,
                 cdr_h2=args.cdr_h2,
                 cdr_h3=args.cdr_h3,
