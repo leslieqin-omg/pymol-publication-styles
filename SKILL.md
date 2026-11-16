@@ -29,9 +29,11 @@ aesthetics without writing repetitive lighting or color setup code:
 
 ## Prerequisites & Execution
 
+Let `<SKILL_DIR>` be the directory containing this `SKILL.md` file (for example, `~/.gemini/config/skills/pymol-publication-styles`, `~/.claude/skills/pymol-publication-styles`, or `~/.codex/skills/pymol-publication-styles`).
+
 1. **Local PyMOL or `uv`**:
-   - If local `python3` has `pymol` installed, run `python3 scripts/render_publication.py ...`.
-   - Otherwise, run with `uv run scripts/render_publication.py ...` (PEP 723 auto-installs `pymol-open-source-whl`; `PYOPENGL_PLATFORM=osmesa` is enabled on Linux headless hosts).
+   - If local `python3` has `pymol` installed, run `python3 <SKILL_DIR>/scripts/render_publication.py ...`.
+   - Otherwise, run with `uv run <SKILL_DIR>/scripts/render_publication.py ...` (PEP 723 auto-installs `pymol-open-source-whl`; `PYOPENGL_PLATFORM=osmesa` is enabled on Linux headless hosts).
 2. **License Notice**: If `.licenses/pymol_LICENSE.txt` does not exist in the working directory, remind the user to check the PyMOL license at `https://www.pymol.org/`.
 
 ## Core Rules
@@ -47,7 +49,7 @@ Pass `--style <style>` to any of the four structural subcommands (`monomer`, `bi
 
 ### 1. Baker Lab / RFdiffusion 1–3 Binder Complex (`baker_rfd`)
 ```bash
-python3 ~/.gemini/config/skills/pymol-publication-styles/scripts/render_publication.py binder \
+python3 <SKILL_DIR>/scripts/render_publication.py binder \
   --style baker_rfd \
   --complex complex.cif \
   --target-chain C --binder-chain K \
@@ -57,7 +59,7 @@ python3 ~/.gemini/config/skills/pymol-publication-styles/scripts/render_publicat
 
 ### 2. Goodsell Watercolor Space-Filling Style (`goodsell`)
 ```bash
-python3 ~/.gemini/config/skills/pymol-publication-styles/scripts/render_publication.py oligomer \
+python3 <SKILL_DIR>/scripts/render_publication.py oligomer \
   --style goodsell \
   --structure assembly.cif \
   --out-prefix output/assembly_goodsell
@@ -65,7 +67,7 @@ python3 ~/.gemini/config/skills/pymol-publication-styles/scripts/render_publicat
 
 ### 3. Cylindrical-Helix Minimalist Architecture (`cylindrical`)
 ```bash
-python3 ~/.gemini/config/skills/pymol-publication-styles/scripts/render_publication.py monomer \
+python3 <SKILL_DIR>/scripts/render_publication.py monomer \
   --style cylindrical \
   --structure barrel.cif \
   --out-prefix output/barrel_cylindrical
@@ -73,7 +75,7 @@ python3 ~/.gemini/config/skills/pymol-publication-styles/scripts/render_publicat
 
 ### 4. ChimeraX Soft-Shadow Ceramic Cryo-EM Surface (`chimerax_soft`)
 ```bash
-python3 ~/.gemini/config/skills/pymol-publication-styles/scripts/render_publication.py binder \
+python3 <SKILL_DIR>/scripts/render_publication.py binder \
   --style chimerax_soft \
   --complex complex.cif \
   --target-chain C --binder-chain K \
@@ -83,7 +85,7 @@ python3 ~/.gemini/config/skills/pymol-publication-styles/scripts/render_publicat
 
 ### 5. Monochrome Ghost + Jewel-Tone Spotlight (`spotlight`)
 ```bash
-python3 ~/.gemini/config/skills/pymol-publication-styles/scripts/render_publication.py active_site \
+python3 <SKILL_DIR>/scripts/render_publication.py active_site \
   --style spotlight \
   --structure enzyme.cif \
   --catalytic-sele "resi 1057+1184+1185+1186" \
@@ -93,7 +95,7 @@ python3 ~/.gemini/config/skills/pymol-publication-styles/scripts/render_publicat
 
 ### 6. AlphaFold pLDDT Confidence Style (`alphafold_plddt`)
 ```bash
-python3 ~/.gemini/config/skills/pymol-publication-styles/scripts/render_publication.py monomer \
+python3 <SKILL_DIR>/scripts/render_publication.py monomer \
   --style alphafold_plddt \
   --structure af2_model.cif \
   --out-prefix output/model_plddt
@@ -101,11 +103,11 @@ python3 ~/.gemini/config/skills/pymol-publication-styles/scripts/render_publicat
 
 ## Custom Python Scripts
 
-Import `publication_style` from `~/.gemini/config/skills/pymol-publication-styles/scripts/publication_style.py`:
+Import `publication_style` from `<SKILL_DIR>/scripts/publication_style.py`:
 
 ```python
 import sys
-sys.path.insert(0, "/Users/leslie/.gemini/config/skills/pymol-publication-styles/scripts")
+sys.path.insert(0, "<SKILL_DIR>/scripts")
 import pymol
 pymol.pymol_argv = ["pymol", "-cq"]
 pymol.finish_launching()
