@@ -372,7 +372,8 @@ def apply_theme(
         ("cartoon_loop_radius", 0.18),
         ("cartoon_tube_radius", 0.45),
         ("cartoon_sampling", 14),
-        ("cartoon_smooth_loops", 1),
+        ("cartoon_smooth_loops", 0),
+        ("cartoon_side_chain_helper", 1),
         ("cartoon_fancy_helices", 0),
         ("cartoon_highlight_color", -1),
         ("stick_radius", 0.22),
@@ -1016,16 +1017,14 @@ def render_monomer(
         else:
             cmd.color(defaults["motif_color"], "motif_region")
             cmd.set("cartoon_transparency", 0.0, "motif_region")
-            cmd.show("sticks", "motif_region and not name C+O+N")
-            cmd.hide("sticks", "motif_region and hydro")
+            cmd.show("sticks", "motif_region and not hydro and not resn GLY")
             cmd.util.cnc("motif_region")
             _rec(
                 pml,
                 f"select motif_region, design and ({motif_sele})\n"
                 f"color {defaults['motif_color']}, motif_region\n"
                 "set cartoon_transparency, 0.0, motif_region\n"
-                "show sticks, motif_region and not name C+O+N\n"
-                "hide sticks, motif_region and hydro\n"
+                "show sticks, motif_region and not hydro and not resn GLY\n"
                 "util.cnc motif_region",
             )
 
@@ -1108,8 +1107,7 @@ def render_binder(
         hydro_anchors = f"byres (({binder_sel}) and resn ILE+VAL+LEU+PHE+TRP+TYR+MET within 4.5 of ({target_sel}))"
         cmd.select("binder_anchors", hydro_anchors)
         if cmd.count_atoms("binder_anchors") > 0:
-            cmd.show("sticks", "binder_anchors and not name C+O+N")
-            cmd.hide("sticks", "binder_anchors and hydro")
+            cmd.show("sticks", "binder_anchors and not hydro and not resn GLY")
             cmd.color("hydro_core", "binder_anchors")
             cmd.util.cnc("binder_anchors")
         _rec(
@@ -1117,7 +1115,7 @@ def render_binder(
             f"show surface, {target_sel}\nshow cartoon, {binder_sel}\ncolor {b_color}, {binder_sel}\n"
             f"set cartoon_transparency, 0.30, {binder_sel}\n"
             f"select binder_anchors, {hydro_anchors}\n"
-            "show sticks, binder_anchors and not name C+O+N\ncolor hydro_core, binder_anchors\nutil.cnc binder_anchors",
+            "show sticks, binder_anchors and not hydro and not resn GLY\ncolor hydro_core, binder_anchors\nutil.cnc binder_anchors",
         )
     else:
         if target_repr in ("surface", "both"):
@@ -1175,8 +1173,7 @@ def render_binder(
     if (show_interface_sticks or zoom_interface or with_inset) and style != "goodsell":
         cmd.select("iface_binder", f"byres (({binder_sel}) within 4.0 of ({target_sel}))")
         cmd.select("iface_target", f"byres (({target_sel}) within 4.0 of ({binder_sel}))")
-        cmd.show("sticks", "(iface_binder or iface_target) and not name C+O+N")
-        cmd.hide("sticks", "(iface_binder or iface_target) and hydro")
+        cmd.show("sticks", "(iface_binder or iface_target) and not hydro and not resn GLY")
         cmd.util.cnc("iface_binder or iface_target")
         cmd.distance("iface_hbonds", "iface_binder", "iface_target", cutoff=3.5, mode=2)
         cmd.set("dash_color", defaults["dash_color"])
@@ -1185,8 +1182,7 @@ def render_binder(
             pml,
             f"select iface_binder, byres (({binder_sel}) within 4.0 of ({target_sel}))\n"
             f"select iface_target, byres (({target_sel}) within 4.0 of ({binder_sel}))\n"
-            "show sticks, (iface_binder or iface_target) and not name C+O+N\n"
-            "hide sticks, (iface_binder or iface_target) and hydro\n"
+            "show sticks, (iface_binder or iface_target) and not hydro and not resn GLY\n"
             "util.cnc iface_binder or iface_target\n"
             "distance iface_hbonds, iface_binder, iface_target, cutoff=3.5, mode=2\n"
             f"set dash_color, {defaults['dash_color']}\nhide labels, iface_hbonds",
@@ -1322,15 +1318,13 @@ def render_oligomer(
             _apply_goodsell_spheres(cmd, "sym_motif", base_color=defaults["motif_color"], pml_lines=pml)
         else:
             cmd.color(defaults["motif_color"], "sym_motif")
-            cmd.show("sticks", "sym_motif and not name C+O+N")
-            cmd.hide("sticks", "sym_motif and hydro")
+            cmd.show("sticks", "sym_motif and not hydro and not resn GLY")
             cmd.util.cnc("sym_motif")
             _rec(
                 pml,
                 f"select sym_motif, oligomer and ({motif_sele})\n"
                 f"color {defaults['motif_color']}, sym_motif\n"
-                "show sticks, sym_motif and not name C+O+N\n"
-                "hide sticks, sym_motif and hydro\n"
+                "show sticks, sym_motif and not hydro and not resn GLY\n"
                 "util.cnc sym_motif",
             )
 
@@ -1501,16 +1495,14 @@ def render_active_site(
         if style == "goodsell":
             _apply_goodsell_spheres(cmd, "catalytic_res", base_color=defaults["motif_color"], pml_lines=pml)
         else:
-            cmd.show("sticks", "catalytic_res and not name C+O")
-            cmd.hide("sticks", "catalytic_res and hydro")
+            cmd.show("sticks", "catalytic_res and not hydro and not resn GLY")
             cmd.color(defaults["connector_color"], "catalytic_res and name CA+CB+N+C+O")
             cmd.color(defaults["motif_color"], "catalytic_res and not name CA+CB+N+C+O")
             cmd.util.cnc("catalytic_res")
             _rec(
                 pml,
                 f"select catalytic_res, enzyme and ({catalytic_sele})\n"
-                "show sticks, catalytic_res and not name C+O\n"
-                "hide sticks, catalytic_res and hydro\n"
+                "show sticks, catalytic_res and not hydro and not resn GLY\n"
                 f"color {defaults['connector_color']}, catalytic_res and name CA+CB+N+C+O\n"
                 f"color {defaults['motif_color']}, catalytic_res and not name CA+CB+N+C+O\n"
                 "util.cnc catalytic_res",
@@ -1624,6 +1616,7 @@ def render_antibody(
     cdr_l2: str = "50-56",
     cdr_l3: str = "89-97",
     footprint_cutoff: float = 4.5,
+    full_fab: bool = False,
     with_inset: bool = False,
     cylindrical_helices: Optional[bool] = None,
     width: int = 2000,
@@ -1646,6 +1639,10 @@ def render_antibody(
 
     ag_sel = f"ab_complex and chain {antigen_chain} and polymer.protein"
     vh_sel = f"ab_complex and chain {heavy_chain} and polymer.protein"
+    if not full_fab:
+        vh_fv = f"ab_complex and chain {heavy_chain} and resi 1-128 and polymer.protein"
+        if cmd.count_atoms(vh_fv) > 0:
+            vh_sel = vh_fv
     if cmd.count_atoms(ag_sel) == 0:
         raise ValueError(f"Antigen selection '{ag_sel}' matched 0 atoms.")
     if cmd.count_atoms(vh_sel) == 0:
@@ -1657,7 +1654,7 @@ def render_antibody(
     cmd.color("ab_antigen_surf", ag_sel)
     _rec(pml, f"show surface, {ag_sel}\nset surface_color, ab_antigen_surf, {ag_sel}\ncolor ab_antigen_surf, {ag_sel}")
 
-    # Heavy & optional light framework
+    # Heavy & optional light framework (Fv by default to avoid constant-domain breaks)
     cmd.show("cartoon", vh_sel)
     cmd.color("ab_framework_vh", vh_sel)
     _rec(pml, f"show cartoon, {vh_sel}\ncolor ab_framework_vh, {vh_sel}")
@@ -1669,6 +1666,10 @@ def render_antibody(
     ]
     if light_chain:
         vl_sel = f"ab_complex and chain {light_chain} and polymer.protein"
+        if not full_fab:
+            vl_fv = f"ab_complex and chain {light_chain} and resi 1-120 and polymer.protein"
+            if cmd.count_atoms(vl_fv) > 0:
+                vl_sel = vl_fv
         if cmd.count_atoms(vl_sel) == 0:
             raise ValueError(f"Light chain selection '{vl_sel}' matched 0 atoms.")
         cmd.show("cartoon", vl_sel)
@@ -1688,34 +1689,34 @@ def render_antibody(
         if cmd.count_atoms(sel_expr) == 0:
             continue
         cmd.select(name, sel_expr)
+        cmd.alter(name, "ss='L'")
         cmd.color(col, name)
-        _rec(pml, f"select {name}, {sel_expr}\ncolor {col}, {name}")
-        if name == "cdr_h3":
-            cmd.set("cartoon_loop_radius", 0.28, name)
-            cmd.show("sticks", f"{name} and not name C+O+N")
-            cmd.hide("sticks", f"{name} and hydro")
-            cmd.util.cnc(name)
-            _rec(
-                pml,
-                f"set cartoon_loop_radius, 0.28, {name}\n"
-                f"show sticks, {name} and not name C+O+N\n"
-                f"hide sticks, {name} and hydro\nutil.cnc {name}",
-            )
+        _rec(pml, f"select {name}, {sel_expr}\nalter {name}, ss='L'\ncolor {col}, {name}")
         cdr_names.append(name)
 
-        # Project epitope footprint on antigen surface
+        # Project smooth atom-level epitope footprint onto antigen surface
         fp_name = f"epitope_{name}"
-        fp_expr = f"byres (({ag_sel}) within {footprint_cutoff} of ({name}))"
+        fp_expr = f"({ag_sel}) within {footprint_cutoff} of ({name})"
         if cmd.count_atoms(fp_expr) > 0:
             cmd.select(fp_name, fp_expr)
             cmd.color(col, fp_name)
             cmd.set("surface_color", col, fp_name)
             _rec(pml, f"select {fp_name}, {fp_expr}\ncolor {col}, {fp_name}\nset surface_color, {col}, {fp_name}")
 
-    # H-bonds between CDR loops and antigen
+    cmd.rebuild()
+    _rec(pml, "rebuild")
+
+    # Show sticks only on CDR residues actually contacting antigen, and draw H-bonds
     if cdr_names:
         all_cdr_expr = " or ".join(cdr_names)
         cmd.select("cdr_all", all_cdr_expr)
+        ab_contacts_expr = f"byres (cdr_all within {footprint_cutoff} of ({ag_sel})) and not resn GLY and not hydro"
+        if cmd.count_atoms(ab_contacts_expr) > 0:
+            cmd.select("cdr_contacts", ab_contacts_expr)
+            cmd.show("sticks", "cdr_contacts")
+            cmd.util.cnc("cdr_contacts")
+            _rec(pml, f"select cdr_contacts, {ab_contacts_expr}\nshow sticks, cdr_contacts\nutil.cnc cdr_contacts")
+
         cmd.select("epitope_all", f"byres (({ag_sel}) within {footprint_cutoff} of cdr_all)")
         cmd.distance("ab_hbonds", "cdr_all", "epitope_all", cutoff=3.5, mode=2)
         cmd.set("dash_color", "spot_dash_gray")
@@ -1866,8 +1867,7 @@ def render_ligand_pocket(
     cmd.show("surface", "pocket_res")
     cmd.set("surface_color", defaults["target_color"], "pocket_res")
     cmd.set("transparency", 0.42, "pocket_res")
-    cmd.show("sticks", "pocket_res and not name C+O")
-    cmd.hide("sticks", "pocket_res and hydro")
+    cmd.show("sticks", "pocket_res and not hydro and not resn GLY")
     cmd.color("pocket_res_carbon", "pocket_res")
     cmd.util.cnc("pocket_res")
     _rec(
@@ -1875,7 +1875,7 @@ def render_ligand_pocket(
         f"select pocket_res, byres ((complex and polymer.protein) within {pocket_radius} of ({lig_sel}))\n"
         f"show surface, pocket_res\nset surface_color, {defaults['target_color']}, pocket_res\n"
         "set transparency, 0.42, pocket_res\n"
-        "show sticks, pocket_res and not name C+O\nhide sticks, pocket_res and hydro\n"
+        "show sticks, pocket_res and not hydro and not resn GLY\n"
         "color pocket_res_carbon, pocket_res\nutil.cnc pocket_res",
     )
 

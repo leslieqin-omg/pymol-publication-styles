@@ -131,6 +131,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_ab.add_argument("--cdr-l2", default="50-56", help="CDR-L2 residue range (default: 50-56)")
     p_ab.add_argument("--cdr-l3", default="89-97", help="CDR-L3 residue range (default: 89-97)")
     p_ab.add_argument("--footprint-cutoff", type=float, default=4.5, help="Epitope projection cutoff in A (default: 4.5)")
+    p_ab.add_argument("--full-fab", action="store_true", help="Show full Fab CH1/CL domains instead of Fv variable domain")
     p_ab.add_argument("--with-inset", action="store_true", help="Generate global + CDR interface inset composite")
     _add_common_args(p_ab, default_style="antibody_cdr")
 
@@ -284,6 +285,7 @@ def main() -> None:
                 cdr_l2=args.cdr_l2,
                 cdr_l3=args.cdr_l3,
                 footprint_cutoff=args.footprint_cutoff,
+                full_fab=args.full_fab,
                 with_inset=args.with_inset,
                 cylindrical_helices=args.cylindrical_helices,
                 width=args.width,
